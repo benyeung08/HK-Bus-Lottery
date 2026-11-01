@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>香港巴士抽獎機 | HK Bus Lottery</title>
+<meta name="description" content="一鍵隨機抽一條香港巴士路線，即刻出發去搭巴士。支援九巴、龍運、城巴、嶼巴，亦可自訂名單抽獎。">
+<meta name="theme-color" content="#0e1116">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230e1116'/%3E%3Ctext y='72' x='50' text-anchor='middle' font-size='58'%3E%F0%9F%9A%8C%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="glow"></div>
+
+<header class="top">
+  <div class="logo">🚌</div>
+  <div class="titles">
+    <h1>香港巴士抽獎機</h1>
+    <p class="sub">HK Bus Lottery · 抽到邊條就去搭邊條</p>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button class="tab active" data-mode="bus" role="tab" aria-selected="true">🚌 抽巴士路線</button>
+  <button class="tab" data-mode="list" role="tab" aria-selected="false">🎁 自訂名單抽獎</button>
+</nav>
+
+<!-- ===== 模式一：抽巴士路線 ===== -->
+<main id="panel-bus" class="panel">
+  <section class="card machine">
+    <div class="reels" id="reels" aria-live="polite">
+      <div class="reel placeholder" id="placeholder">按「開始抽」<br><span>睇下命運安排邊條線</span></div>
+    </div>
+    <div class="result" id="result" hidden>
+      <div class="badge" id="r-co">九巴</div>
+      <div class="route-line">
+        <span class="from" id="r-orig">—</span>
+        <span class="arrow">➜</span>
+        <span class="to" id="r-dest">—</span>
+      </div>
+      <div class="meta" id="r-meta"></div>
+    </div>
+  </section>
+
+  <section class="controls">
+    <button class="btn primary big" id="btn-spin">🎰 開始抽</button>
+    <div class="btn-row">
+      <button class="btn ghost" id="btn-copy">📋 複製結果</button>
+      <button class="btn ghost" id="btn-clear-history">🗑 清空紀錄</button>
+    </div>
+  </section>
+
+  <section class="card settings">
+    <h2>篩選與設定</h2>
+    <div class="chips" id="co-chips">
+      <button class="chip active" data-co="ALL">全部</button>
+      <button class="chip" data-co="KMB">九巴</button>
+      <button class="chip" data-co="LWB">龍運</button>
+      <button class="chip" data-co="CTB">城巴</button>
+      <button class="chip" data-co="NLB">嶼巴</button>
+    </div>
+    <div class="switches">
+      <label class="switch"><input type="checkbox" id="opt-norepeat"><span>唔抽重複（抽過唔再中）</span></label>
+      <label class="switch"><input type="checkbox" id="opt-sound" checked><span>音效</span></label>
+      <label class="switch"><input type="checkbox" id="opt-live" checked><span>連線抓最新路線資料</span></label>
+    </div>
+    <p class="hint" id="data-status">載入中…</p>
+  </section>
+
+  <section class="card history-card">
+    <h2>抽獎紀錄 <span class="count" id="history-count"></span></h2>
+    <ul class="history" id="history"></ul>
+  </section>
+</main>
+
+<!-- ===== 模式二：自訂名單抽獎 ===== -->
+<main id="panel-list" class="panel" hidden>
+  <section class="card machine">
+    <div class="reels single">
+      <div class="reel placeholder" id="name-display">輸入名單<br><span>每行一個</span></div>
+    </div>
+    <p class="meta center" id="list-meta">剩餘 0 位</p>
+  </section>
+
+  <section class="controls">
+    <button class="btn primary big" id="btn-spin-name">🎰 抽！</button>
+    <div class="btn-row">
+      <button class="btn ghost" id="btn-copy-name">📋 複製</button>
+      <button class="btn ghost" id="btn-reset-name">↺ 重置名單</button>
+    </div>
+  </section>
+
+  <section class="card settings">
+    <h2>名單（每行一個）</h2>
+    <textarea id="name-input" rows="6" placeholder="陳大文&#10;李小明&#10;Wing Wing&#10;阿強"></textarea>
+    <div class="switches">
+      <label class="switch"><input type="checkbox" id="opt-remove" checked><span>中獎後移出名單</span></label>
+      <label class="switch"><input type="checkbox" id="opt-sound2" checked><span>音效</span></label>
+    </div>
+    <p class="hint">名單會自動存在你手機／電腦，下次開仲喺度。</p>
+  </section>
+
+  <section class="card history-card">
+    <h2>中獎紀錄 <span class="count" id="win-count"></span></h2>
+    <ul class="history" id="winners"></ul>
+  </section>
+</main>
+
+<footer>
+  <p>路線資料來源：運輸署／各巴士公司開放數據（data.gov.hk）。本網站只作抽籤娛樂，班次與路線以官方公佈為準。</p>
+  <p class="gh">
+    <a id="gh-link" href="https://github.com" target="_blank" rel="noopener">⭐ GitHub 倉庫</a>
+    <span class="sep">·</span>
+    <span id="gen-time"></span>
+  </p>
+</footer>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
